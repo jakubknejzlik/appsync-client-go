@@ -14,7 +14,14 @@ type Response struct {
 }
 
 // DataAs converts Response.Data to the specified struct
-func (r *Response) DataAs(v interface{}) error {
+func (r *Response) DataAs(v interface{}, parseAll bool) error {
+	if parseAll {
+		b, err := json.Marshal(r.Data)
+		if err != nil {
+			return err
+		}
+		return json.Unmarshal(b, v)
+	}
 	m, ok := r.Data.(map[string]interface{})
 	if !ok {
 		return fmt.Errorf("data is invalid")
